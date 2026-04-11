@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="FreeLanceHub.API/FreeLanceHub.API.csproj" />
+  <Project Path="FreeLanceHub.Core/FreeLanceHub.Core.csproj" />
+  <Project Path="FreeLanceHub.Infrastructure/FreeLanceHub.Infrastructure.csproj" />
+</Solution>
