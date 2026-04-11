@@ -7,6 +7,10 @@
   --color-primary-700: #1d4ed8;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
