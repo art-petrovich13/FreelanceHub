@@ -1,6 +1,8 @@
 using FreeLanceHub.Core.Entities;
+using FreeLanceHub.Core.Interfaces;
 using FreeLanceHub.Infrastructure.Data;
 using FreeLanceHub.Infrastructure.SeedData;
+using FreeLanceHub.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +18,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(opt =>
 // 2. ASP.NET Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(opt =>
 {
-    // Правила для паролей
     opt.Password.RequireDigit = true;
     opt.Password.RequiredLength = 6;
     opt.Password.RequireUppercase = false;
     opt.Password.RequireNonAlphanumeric = false;
-
-    // Email должен быть уникальным
     opt.User.RequireUniqueEmail = true;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -48,7 +47,7 @@ builder.Services.AddAuthentication(opt =>
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
-        ClockSkew = TimeSpan.Zero  // Без задержки при истечении токена
+        ClockSkew = TimeSpan.Zero
     };
 });
 
@@ -67,12 +66,49 @@ builder.Services.AddCors(opt => opt.AddPolicy("FrontendPolicy", policy =>
 // 5. Контроллеры и Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "FreeLanceHub API",
+        Version = "v1",
+        Description = "Биржа фриланс-услуг для студентов"
+    });
 
-// (!) На следующих днях сюда будем добавлять регистрацию сервисов:
-// builder.Services.AddScoped<IAuthService, AuthService>();
-// builder.Services.AddScoped<IGigService, GigService>();
-// и т.д.
+    // Добавляем кнопку "Authorize" в Swagger UI
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Description = "Введите JWT токен. Пример: eyJhbGciOiJIUzI1NiIs..."
+    });
+
+    // Глобальное требование токена для всех защищённых эндпоинтов
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id   = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Сервисы
+builder.Services.AddScoped<IAuthService, AuthService>();
+// (День 4+) builder.Services.AddScoped<IGigService, GigService>();
+// (День 5+) builder.Services.AddScoped<IOrderService, OrderService>();
+// (День 5+) builder.Services.AddScoped<IProposalService, ProposalService>();
+// (День 6+) builder.Services.AddScoped<IReviewService, ReviewService>();
 
 var app = builder.Build();
 
