@@ -105,7 +105,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // Сервисы
 builder.Services.AddScoped<IAuthService, AuthService>();
-// (День 4+) builder.Services.AddScoped<IGigService, GigService>();
+builder.Services.AddScoped<IGigService, GigService>();
 // (День 5+) builder.Services.AddScoped<IOrderService, OrderService>();
 // (День 5+) builder.Services.AddScoped<IProposalService, ProposalService>();
 // (День 6+) builder.Services.AddScoped<IReviewService, ReviewService>();
