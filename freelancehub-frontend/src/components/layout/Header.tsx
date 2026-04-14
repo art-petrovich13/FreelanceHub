@@ -82,6 +82,24 @@ export default function Header() {
                   + Заказ
                 </Link>
               )}
+
+              <Link
+                to={`/profile/${user?.id}`}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600
+    hover:text-gray-900 hover:bg-gray-100 transition-colors"
+              >
+                Мой профиль
+              </Link>
+
+              {user?.role === 'Admin' && (
+                <Link
+                  to="/admin"
+                  className="px-3 py-2 rounded-lg text-sm font-medium text-red-600
+      hover:text-red-700 hover:bg-red-50 transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
             </>
           )}
         </nav>
@@ -112,13 +130,7 @@ export default function Header() {
                 </div>
               </Link>
 
-              <Link
-                to={`/profile/${user?.id}`}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600
-    hover:text-gray-900 hover:bg-gray-100 transition-colors"
-              >
-                Мой профиль
-              </Link>
+
 
               {/* Кнопка выхода */}
               <button
