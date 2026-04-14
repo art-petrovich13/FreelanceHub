@@ -7,23 +7,24 @@ import Spinner from '../../components/ui/Spinner'
 import Badge from '../../components/ui/Badge'
 import ProposalCard from '../../components/orders/ProposalCard'
 import ProposalForm from '../../components/orders/ProposalForm'
+import ReviewForm from '../../components/reviews/ReviewForm'
 
 export default function OrderDetailPage() {
   const { id } = useParams<{ id: string }>()
-  const user   = useAuthStore((s) => s.user)
+  const user = useAuthStore((s) => s.user)
 
   const { data: order, isLoading, isError } = useOrder(id!)
 
   // Определяем роль текущего пользователя относительно заказа
   const isEmployer = user?.id === order?.employerId
-  const isStudent  = user?.role === 'Student'
+  const isStudent = user?.role === 'Student'
   const isSelectedStudent = user?.id === order?.selectedStudentId
 
   // Загружаем отклики только если пользователь — владелец заказа
   const { data: proposals } = useOrderProposals(id!, isEmployer)
 
-  const completeOrder  = useCompleteOrder()
-  const confirmOrder   = useConfirmOrder()
+  const completeOrder = useCompleteOrder()
+  const confirmOrder = useConfirmOrder()
   const acceptProposal = useAcceptProposal()
   const rejectProposal = useRejectProposal()
 
@@ -171,7 +172,13 @@ export default function OrderDetailPage() {
             <ProposalForm orderId={id!} orderBudget={order.budget} />
           )}
 
+          {order.status === 'Completed' && (
+            <ReviewForm orderId={id!} />
+          )}
+
         </div>
+
+
 
         {/* ── Боковая панель ── */}
         <div className="space-y-4">
