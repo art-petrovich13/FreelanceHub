@@ -28,41 +28,59 @@ import AdminUsers from '../pages/admin/AdminUsers'
 import AdminGigs from '../pages/admin/AdminGigs'
 import AdminOrders from '../pages/admin/AdminOrders'
 
+import { useAuthStore } from '../store/authStore'
+
+function DashboardRedirect() {
+  const user = useAuthStore((s) => s.user)
+
+  if (user?.role === 'Student') {
+    return <Navigate to="/dashboard/student" replace />
+  }
+  if (user?.role === 'Employer') {
+    return <Navigate to="/dashboard/employer" replace />
+  }
+  if (user?.role === 'Admin') {
+    return <Navigate to="/admin" replace />
+  }
+  return <Navigate to="/" replace />
+}
+
 export function AppRoutes() {
   return (
     <Routes>
 
       {/* ── Публичные страницы БЕЗ Layout (полноэкранные) ─────────── */}
-      <Route path="/login"    element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
       {/* ── Admin (только роль Admin) ──────────────────────────────── */}
       <Route element={<RoleRoute allowedRoles={['Admin']} />}>
         <Route element={<Layout />}>
-          <Route path="/admin"         element={<AdminDashboard />} />
-          <Route path="/admin/users"   element={<AdminUsers />} />
-          <Route path="/admin/gigs"    element={<AdminGigs />} />
-          <Route path="/admin/orders"  element={<AdminOrders />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/gigs" element={<AdminGigs />} />
+          <Route path="/admin/orders" element={<AdminOrders />} />
         </Route>
       </Route>
 
       {/* ── Защищённые роуты (любой авторизованный) ───────────────── */}
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
-          <Route path="/gigs/create"        element={<CreateGigPage />} />
-          <Route path="/orders/create"      element={<CreateOrderPage />} />
-          <Route path="/profile/edit"       element={<EditProfilePage />} />
-          <Route path="/dashboard/student"  element={<StudentDashboard />} />
+          <Route path="/gigs/create" element={<CreateGigPage />} />
+          <Route path="/orders/create" element={<CreateOrderPage />} />
+          <Route path="/profile/edit" element={<EditProfilePage />} />
+          <Route path="/dashboard" element={<DashboardRedirect />} />
+          <Route path="/dashboard/student" element={<StudentDashboard />} />
           <Route path="/dashboard/employer" element={<EmployerDashboard />} />
         </Route>
       </Route>
 
       {/* ── Публичные страницы С Layout (Header + Footer) ─────────── */}
       <Route element={<Layout />}>
-        <Route index             element={<HomePage />} />
-        <Route path="/gigs"      element={<GigsListPage />} />
-        <Route path="/gigs/:id"  element={<GigDetailPage />} />
-        <Route path="/orders"    element={<OrdersListPage />} />
+        <Route index element={<HomePage />} />
+        <Route path="/gigs" element={<GigsListPage />} />
+        <Route path="/gigs/:id" element={<GigDetailPage />} />
+        <Route path="/orders" element={<OrdersListPage />} />
         <Route path="/orders/:id" element={<OrderDetailPage />} />
         <Route path="/profile/:id" element={<ProfilePage />} />
       </Route>

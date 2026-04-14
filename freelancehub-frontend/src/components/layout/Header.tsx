@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import toast from 'react-hot-toast'
 import Avatar from '../ui/Avatar'
+import NotificationBell from './NotificationBell'
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuthStore()
@@ -83,13 +84,6 @@ export default function Header() {
                 </Link>
               )}
 
-              <Link
-                to={`/profile/${user?.id}`}
-                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600
-    hover:text-gray-900 hover:bg-gray-100 transition-colors"
-              >
-                Мой профиль
-              </Link>
 
               {user?.role === 'Admin' && (
                 <Link
@@ -108,13 +102,15 @@ export default function Header() {
         <div className="flex items-center gap-2 shrink-0">
           {isAuthenticated() ? (
             <>
-              {/* Имя пользователя + роль */}
+              {/* Уведомления */}
+              <NotificationBell />
+
+              {/* Имя + аватар → переход на дашборд */}
               <Link
                 to={dashboardPath}
                 className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg
-                  hover:bg-gray-100 transition-colors"
+        hover:bg-gray-100 transition-colors"
               >
-                {/* Аватар-заглушка с инициалами */}
                 <Avatar
                   src={null}
                   name={`${user?.firstName ?? ''} ${user?.lastName ?? ''}`}
@@ -130,13 +126,18 @@ export default function Header() {
                 </div>
               </Link>
 
+              <Link
+                to={`/profile/${user?.id}`}
+                className="px-3 py-2 rounded-lg text-sm font-medium text-gray-600
+    hover:text-gray-900 hover:bg-gray-100 transition-colors"
+              >
+                Мой профиль
+              </Link>
 
-
-              {/* Кнопка выхода */}
               <button
                 onClick={handleLogout}
                 className="text-sm text-gray-500 hover:text-red-600
-                  hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
+        hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
               >
                 Выйти
               </button>
