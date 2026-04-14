@@ -1,4 +1,3 @@
-// Тип статуса отклика (совпадает с backend enum ProposalStatus)
 export type ProposalStatus = 'Pending' | 'Accepted' | 'Rejected'
 
 export interface Proposal {
@@ -6,7 +5,10 @@ export interface Proposal {
   orderId: string
   studentId: string
   studentName: string
+  studentAvatar?: string
   studentRating: number
+  studentReviews: number
+  studentUniversity?: string
   coverLetter: string
   proposedPrice: number
   proposedDays: number
@@ -14,7 +16,6 @@ export interface Proposal {
   createdAt: string
 }
 
-// Данные для подачи отклика
 export interface CreateProposalData {
   orderId: string
   coverLetter: string
