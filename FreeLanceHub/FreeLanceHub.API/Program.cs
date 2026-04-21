@@ -1,3 +1,4 @@
+using FreeLanceHub.API.Middleware;
 using FreeLanceHub.Core.Entities;
 using FreeLanceHub.Core.Interfaces;
 using FreeLanceHub.Infrastructure.Data;
@@ -112,6 +113,8 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // 6. Middleware pipeline
 app.UseCors("FrontendPolicy");         
